@@ -8,7 +8,8 @@
   "private": true,
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
-    "start": "nodemon server/app.js"
+    "dev": "nodemon server/app.js",
+    "start": "node server/app.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -17,17 +18,21 @@
     "date-fns": "^1.29.0",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
+    "greenlock-express": "^2.1.1",
     "mailgun-js": "^0.18.0",
     "mongodb": "^3.0.7",
     "mongoose": "^5.0.17",
+    "node-sass": "^4.9.0",
+    "redirect-https": "^1.1.5",
     "vue-i18n": "^7.3.3",
     "vue2-editor": "^2.4.3",
     "vuelidate": "^0.6.2"
   },
   "devDependencies": {
     "bcrypt": "^2.0.1",
-    "nodemon": "^1.17.3",
+    "nodemon": "^1.17.4",
     "quasar-cli": "^0.15.14",
+    "sass-loader": "^7.0.1",
     "vueditor": "^0.3.1"
   },
   "engines": {

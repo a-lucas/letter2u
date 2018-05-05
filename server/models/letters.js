@@ -34,14 +34,22 @@ const LetterSchema = new Schema({
   expirationDate: {
     type: Date,
     required: true,
-    validate: {
-      validator: (date) => isFuture(new Date(date)),
-      message: '{VALUE} is in the past'
-    }
   },
   content: {
     type: String,
     required: true
+  },
+  sent: {
+    type: Boolean,
+    default: false,
+  },
+  read: {
+    type: Number,
+    default: 0,
+  },
+  deleted: {
+    type: Boolean,
+    default: false,
   }
 });
 

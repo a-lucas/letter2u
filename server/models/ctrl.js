@@ -1,28 +1,14 @@
 const Letters = require('./letters');
-require('dotenv').config();
+
+require('./../env');
+
 const {isFuture} = require('date-fns');
 
-const crypto = require('crypto');
-const algorithm = 'aes-256-ctr';
+const {encrypt, decrypt} = require('../encrypt');
 
 const mailgun = require('mailgun-js')({apiKey: process.env.MG_KEY, domain: process.env.MG_DOMAIN});
 
 const {format} = require('date-fns');
-
-const encrypt = (text, email) => {
-  var cipher = crypto.createCipher(algorithm, email);
-  var crypted = cipher.update(text,'utf8','hex');
-  crypted += cipher.final('hex');
-  return crypted;
-};
-
-
-const decrypt = (text, email) => {
-  var decipher = crypto.createDecipher(algorithm, email);
-  var dec = decipher.update(text,'hex','utf8');
-  dec += decipher.final('utf8');
-  return dec;
-};
 
 exports.listAllLetters = (req, res) => {
   Letters.find({}, (err, task) => {
@@ -34,56 +20,38 @@ exports.listAllLetters = (req, res) => {
 };
 
 exports.createNewLetter = (req, res) => {
+  console.log('creating new Letter');
   req.body.content = encrypt(req.body.content, req.body.email);
   const letter = new Letters(req.body);
   letter.save((err, task) => {
     if (err) {
       return res.status(500).send(err);
     }
-
-    const link = `http://${process.env.DOMAIN}:${process.env.PORT}/letter/${letter._id}`;
-    const deleteLink = `http://${process.env.DOMAIN}:${process.env.PORT}/delete_letter/${letter._id}`;
-
-    const data = {
-      from: `${letter.name} <${letter.email}>`,
-      to: letter.remail,
-      subject: `${letter.name} wrote you a letter`,
-      text: `Letter2U is a service that allows anyone to seal a letter for a determined period of time.
-      The message cannot be cancelled neither edited. It is written as is. 
-      
-      ${letter.name} wrote you this letter on the ${format(letter.createdOn, 'Do of MMMM YYYY')}.
-      
-      This letter has now been activated, and his content has been decrypted.
-      
-      You can read it by clicking on this link ${link}.
-      
-      You can also ignore to read this letter and delete it forever here ${deleteLink}.
-      `
-    };
-
-    mailgun.messages().send(data, (err, body) => {
-      if (err) {
-        return res.status(201).json(task);
-        return res.status(500).send(err);
-      }
-      res.status(201).json(task);
-    });
+    res.status(200).json({_id: task._id});
   });
 };
 
 exports.readLetter = (req, res) => {
-  console.log('req', req.params);
-
+  console.log('reading Letter');
   Letters.findById(req.params.letterid, (err, letter) => {
     if (err) {
       return res.status(500).send(err);
     }
     if (isFuture(new Date(letter.expirationDate))) {
       letter.content = null;
+      res.status(200).json(letter);
     } else {
       letter.content = decrypt(letter.content, letter.email);
+
+      console.log('content OK');
+
+      Letters.findOneAndUpdate({ _id: req.params.letterid }, {sent: true}, (err) => {
+        if (err) {
+          return res.status(404).send(err);
+        }
+        res.status(200).json(letter);
+      });
     }
-    res.status(200).json(letter);
   });
 };
 
@@ -102,7 +70,7 @@ exports.updateLetter = (req, res) => {
 };
 
 exports.deleteLetter = (req, res) => {
-  Letters.remove({ _id: req.params.letterid }, (err, task) => {
+  Letters.findOneAndUpdate({ _id: req.params.letterid }, {deleted: true}, (err) => {
     if (err) {
       res.status(404).send(err);
     }

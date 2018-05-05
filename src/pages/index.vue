@@ -117,9 +117,7 @@
       },
       send() {
         this.$axios.post('/letters',this.form).then(({data}) => {
-          console.log('success', data);
           this.$router.push({ name: 'letter', params: { letterID: data._id }})
-
         }, (err) => {
           console.log(err);
         });

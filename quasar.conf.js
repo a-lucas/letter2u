@@ -1,5 +1,11 @@
 // Configuration for your app
-require('dotenv').config();
+const path = require('path');
+
+const environment = process.env.NODE_ENV || 'development';
+
+require('dotenv').config({
+  path: path.resolve(__dirname, `.env.${environment}`)
+});
 
 module.exports = function (ctx) {
   return {
@@ -63,6 +69,7 @@ module.exports = function (ctx) {
         'QDatetime',
         'QField',
         'QModal',
+        'QModalLayout',
         'QTimeline',
         'QTimelineEntry'
       ],
@@ -72,7 +79,8 @@ module.exports = function (ctx) {
       ],
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+        'Loading'
       ]
     },
     // animations: 'all' --- includes all animations

@@ -15,6 +15,11 @@ export default [
     path: '/letter/:letterID',
     component: () => import('pages/letter'),
   },
+  {
+    name: 'deleteLetter',
+    path: '/delete/:letterID',
+    component: () => import('pages/deleteLetter'),
+  },
   { // Always leave this as last one
     path: '*',
     component: () => import('pages/404'),
