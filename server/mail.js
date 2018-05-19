@@ -1,9 +1,6 @@
-require('./env');
-
 const mailgun = require('mailgun-js')({apiKey: process.env.MG_KEY, domain: process.env.MG_DOMAIN});
 
 const {format} = require('date-fns');
-
 
 exports.sendLetter = (letter) => {
 

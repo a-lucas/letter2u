@@ -52,20 +52,25 @@
       <q-btn @click="valid()">Create</q-btn>
     </div>
 
-    <q-modal v-model="opened" no-route-dismiss content-css="padding: 30px">
-      <h5>This is it, no coming back !</h5>
-      <p>This letter will be created, <b>you won't be able to modify it, or cancel it.</b></p>
-      <p>This letter will only be readable after the following date: {{format(form.expirationDate, 'Do of MMMM YYYY')}}</p>
-      <q-btn
-        color="red"
-        @click="opened = false"
-        label="Back"
-      />
-      <q-btn
-        color="primary"
-        @click="send()"
-        label="Register and continue"
-      />
+    <q-modal v-model="opened" no-route-dismiss content-css="padding: 10px">
+      <p style="text-align: center"><u>You are responsible of what you send.</u></p>
+      <p style="text-align: center">This letter will be sent - no matter what happens, <b>you won't be able to modify it, or cancel it.</b></p>
+      <p style="text-align: center">This letter will only be readable after the following date: <b>{{format(form.expirationDate, 'Do of MMMM YYYY')}}</b></p>
+
+      <div class="flex flex-center">
+        <q-btn
+          color="red"
+          @click="opened = false"
+          size="lg"
+          label="No, let me check it again."
+        />
+        <q-btn
+          color="primary"
+          @click="send()"
+          label="I understand and wish to proceed"
+        />
+      </div>
+
     </q-modal>
   </q-page>
 </template>
@@ -116,7 +121,7 @@
         this.opened = true;
       },
       send() {
-        this.$axios.post('/letters',this.form).then(({data}) => {
+        this.$axios.post('letters',this.form).then(({data}) => {
           this.$router.push({ name: 'letter', params: { letterID: data._id }})
         }, (err) => {
           console.log(err);

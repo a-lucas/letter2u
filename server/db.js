@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
-const environment = process.env.NODE_ENV || 'development';
 
-require('./env');
-
-const {MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_URL, MONGODB_DB} = process.env;
-
-const dbURI = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_URL}/${MONGODB_DB}`;
+const dbURI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_URL}/${process.env.MONGODB_DB}`;
 const {sendLetter} = require('./mail');
 
 const options = {
@@ -28,11 +23,9 @@ const checkUnsentLetters = () => {
         console.error('Error executing query', err);
         process.exit(1);
       }
-
       const promises = letters.map( sendLetter );
 
       Promise.all(promises).then((ids) => {
-        console.log('done');
         ids.forEach((_id) => {
           Letters.findOneAndUpdate({_id}, { sent: true }, (err) => {
             if (err) {
@@ -43,6 +36,7 @@ const checkUnsentLetters = () => {
       }).catch((err) => {
         console.error(err);
       });
+
     });
 };
 
@@ -51,13 +45,16 @@ mongoose.connect(dbURI, options).then(
     console.log('Database connection established!');
 
     console.log('Checking unsent Letters...');
-
     checkUnsentLetters();
 
-
+    setInterval(() => {
+      console.log('Checking unsent Letters...');
+      checkUnsentLetters();
+    }, 5 * 3600 * 1000); // Check Every 5 hour
   },
   err => {
     console.log('Error connecting Database instance due to: ', err);
+    throw err;
   }
 );
 

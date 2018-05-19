@@ -17,12 +17,12 @@
 
         <q-timeline color="secondary">
           <q-timeline-entry heading>
-            How it works
+            What is it?
           </q-timeline-entry>
 
           <q-timeline-entry
-            title="Write your letter"
-            subtitle="Fill in names and emails, the activation date and take time to review your corespondance"
+            title="An authentic letter"
+            subtitle="No registration, You can write a letter, and it will be delivered at a date of your choice.."
             side="left"
           >
             <div>
@@ -32,31 +32,34 @@
 
 
           <q-timeline-entry
-            title="Click the button, and send it in the future"
-            subtitle="The letter is stored encrypted, and you can't delete it. A link is created that you can share to who you want."
+            title="No way to get back in time"
+            subtitle="The letter is stored encrypted, and you won't be able to edit or cancel this action."
             side="left"
           >
             <div>
-              <span style="font-size: 12px">You will probably forget about it.</span>
+              <span style="font-size: 12px">And no way to guess what tomorrow will be made of</span>
             </div>
           </q-timeline-entry>
 
 
 
           <q-timeline-entry
-            title="Time flys"
-            subtitle="When the specified activation day comes, a link is sent to the letter's recipient who will be able to read the un-edited decrypted content."
+            title="Time clocks"
+            subtitle="When the choosen day comes, a link is sent to the recipient who will be able to read the decrypted letter."
             side="left"
           >
             <div>
-              <span style="font-size: 12px">And you might get an answer ( or not )</span>
+              <span style="font-size: 12px">You might get an answer</span>
             </div>
           </q-timeline-entry>
         </q-timeline>
 
-        <q-btn color="secondary" @click="help=!help">
-          Got it !
-        </q-btn>
+        <div class="flex flex-center">
+          <q-btn color="secondary" @click="help=!help">
+            Got it !
+          </q-btn>
+        </div>
+
       </q-modal>
 
       <router-view />

@@ -18,6 +18,12 @@ yarn-error.log*
 *.njsproj
 *.sln
 
+# deployment files
+deploy.sh
+
+# SSL certs
+server/ssl
+
 # Env Files
 .env.production
 .env.development

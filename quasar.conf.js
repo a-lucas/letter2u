@@ -1,11 +1,14 @@
 // Configuration for your app
 const path = require('path');
+const webpack = require('webpack');
 
 const environment = process.env.NODE_ENV || 'development';
 
 require('dotenv').config({
   path: path.resolve(__dirname, `.env.${environment}`)
 });
+
+console.log('DOMAIN/PORT', process.env.DOMAIN, process.env.PORT);
 
 module.exports = function (ctx) {
   return {
@@ -37,11 +40,19 @@ module.exports = function (ctx) {
       },
       scopeHoisting: true,
       vueRouterMode: 'history',
-      // gzip: true,
-      analyze: true,
-      // extractCSS: false,
-      // useNotifier: false,
-      extendWebpack (cfg) {}
+      minify: true,
+      gzip: false,
+      analyze: false,
+      extractCSS: true,
+      useNotifier: true,
+      extendWebpack (cfg) {
+        cfg.plugins.push(
+          new webpack.DefinePlugin({
+            'process.env.NODE_ENV': '"production"'
+          }));
+        cfg.devtool = false;
+
+      }
     },
     devServer: {
       // https: true,
@@ -147,4 +158,4 @@ module.exports = function (ctx) {
     // leave this here for Quasar CLI
     starterKit: '1.0.3'
   }
-}
+};

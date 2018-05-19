@@ -2,39 +2,18 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ctrl = require('./models/ctrl');
 const history = require('connect-history-api-fallback');
-const redirectHttps = require('redirect-https');
-
+const https = require('https');
 const path = require('path');
-require('./env');
 
-const PROD = process.env.NODE_ENV==='production';
-
-const lex = require('greenlock-express').create({
-  server: PROD ? 'https://acme-v01.api.letsencrypt.org/directory' : 'staging',
-
-  approveDomains: (opts, certs, cb) => {
-    if (certs) {
-      // change domain list here
-      opts.domains = ['letter2u.club', 'www.letter2u.club', 'localhost'];
-      opts.version = 'v01';
-    } else {
-      // change default email to accept agreement
-      opts.email = 'cooluhuru@gmail.com';
-      opts.agreeTos = true;
-      opts.version = 'v01';
-    }
-    cb(null, { options: opts, certs: certs });
-  }
-});
+const key = require('./ssl/private.pem');
+const cert = require('./ssl/certificate.pem');
+const compression = require('compression');
 
 const app = express();
 
+app.use(compression());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({limit: '150mb'}));
-
-app.use(lex.middleware(redirectHttps()));
-
-const port = process.env.PORT || 3301;
 
 require('./db');
 
@@ -51,8 +30,6 @@ app.use((req, res, next) => {
   }
 });
 
-app.get('/health-check', (req, res) => res.sendStatus(200));
-
 app
   .route("/letters")
   .get(ctrl.listAllLetters)
@@ -64,20 +41,45 @@ app
   .put(ctrl.updateLetter)
   .delete(ctrl.deleteLetter);
 
+const PROD = process.env.NODE_ENV==='production';
+const port = process.env.PORT || 3301;
 
-app.use(express.static('static'));
+const staticPath = './spa-mat';
 
-app.use('/', express.static(path.join(__dirname, '../dist/spa-mat')));
+console.log(staticPath);
+
+app.use('/', express.static(staticPath));
 
 app.use(history({
 //  disableDotRule: true,
   verbose: true
 }));
 
-app.use(express.static('static'));
+app.use('/', express.static(staticPath));
 
-app.use('/', express.static(path.join(__dirname, '../dist/spa-mat')));
+if (PROD) {
 
-app.listen(port, () => {
-  console.log(`Server running `);
-});
+  const options = {
+    key,
+    cert,
+  };
+
+  https.createServer(options, app).listen(port, (err) => {
+    if (err) {
+      throw err;
+    }
+    console.log(`HTTPS Express server listening on port ${port}`);
+  });
+
+} else {
+  const port = process.env.PORT || 3302;
+
+  app.listen(port, (err) => {
+    if (err) {
+      throw err;
+    }
+    console.log(`Server running on port ${port}`);
+  });
+}
+
+

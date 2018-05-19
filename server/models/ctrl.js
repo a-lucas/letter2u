@@ -1,14 +1,8 @@
 const Letters = require('./letters');
 
-require('./../env');
-
 const {isFuture} = require('date-fns');
 
 const {encrypt, decrypt} = require('../encrypt');
-
-const mailgun = require('mailgun-js')({apiKey: process.env.MG_KEY, domain: process.env.MG_DOMAIN});
-
-const {format} = require('date-fns');
 
 exports.listAllLetters = (req, res) => {
   Letters.find({}, (err, task) => {
