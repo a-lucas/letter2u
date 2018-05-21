@@ -1,56 +1,60 @@
 <template>
   <q-page>
+    <div class="row justify-center">
+      <div class="col-lg-3 form-padding col-sm-8">
+        <q-field
+          label="Activation Date"
+          helper="This letter will be readable after this date"
+        >
+          <q-datetime v-model="form.expirationDate" type="date"
+                      @blur="$v.form.expirationDate.$touch"
+                      format="Do MMM YYYY"
+                      :min="addDays(new Date(), 1)"
+                      :error="$v.form.expirationDate.$error"/>
+        </q-field>
+      </div>
 
-    <div class="flex flex-center" style="justify-content: center">
+      <div class="col-lg-4 form-padding col-sm-8">
+        <q-field
+          label="From"
+          helper="Information about yourself"
+        >
+          <q-input v-model="form.name" float-label="Your name"
+                   @blur="$v.form.name.$touch"
+                   :error="$v.form.name.$error"/>
 
-      <q-field
-        label="Activation Date"
-        helper="This letter will be readable after this date"
-        class="q-ma-md"
-      >
-        <q-datetime v-model="form.expirationDate" type="date"
-                    @blur="$v.form.expirationDate.$touch"
-                    :min="addDays(new Date(), 1)"
-                    :error="$v.form.expirationDate.$error"/>
-      </q-field>
+          <q-input v-model="form.email" float-label="Your email"
+                   @blur="$v.form.email.$touch"
+                   :error="$v.form.email.$error"/>
+        </q-field>
 
-      <q-field
-        label="Sender (YOU)"
-        class="q-ma-md"
-      >
-        <q-input v-model="form.name" float-label="Your name"
-                 @blur="$v.form.name.$touch"
-                 :error="$v.form.name.$error"/>
+      </div>
+      <div class="col-lg-4 form-padding col-sm-8">
+        <q-field
+          label="To"
+          helper="Where do we send this letter?"
+        >
+          <q-input v-model="form.rname" float-label="Recipent's name"
+                   @blur="$v.form.rname.$touch"
+                   :error="$v.form.rname.$error"/>
 
-        <q-input v-model="form.email" float-label="Your email"
-                 @blur="$v.form.email.$touch"
-                 :error="$v.form.email.$error"/>
-      </q-field>
+          <q-input v-model="form.remail" float-label="Recipent's email"
+                   @blur="$v.form.remail.$touch"
+                   :error="$v.form.remail.$error"/>
+        </q-field>
+      </div>
+    </div>
+    <div class="flex justify-center row q-mt-xl">
+      <div class="col-11">
+        <vue-editor v-model="form.content"></vue-editor>
+      </div>
 
-      <q-field
-        label="Recipient"
-        class="q-ma-md"
-      >
-        <q-input v-model="form.rname" float-label="Recipent's name"
-                 @blur="$v.form.rname.$touch"
-                 :error="$v.form.rname.$error"/>
 
-        <q-input v-model="form.remail" float-label="Recipent's email"
-                 @blur="$v.form.remail.$touch"
-                 :error="$v.form.remail.$error"/>
-      </q-field>
+    </div>
+    <div class="row q-ma-md" style="justify-content: center">
+      <q-btn @click="valid()" color="purple">Create</q-btn>
     </div>
 
-    <div class="flex flex-center">
-      <q-field
-        :error="$v.form.content.$error">
-      <vue-editor v-model="form.content"></vue-editor>
-      </q-field>
-    </div>
-
-    <div class="flex flex-center q-ma-md">
-      <q-btn @click="valid()">Create</q-btn>
-    </div>
 
     <q-modal v-model="opened" no-route-dismiss content-css="padding: 10px">
       <p style="text-align: center"><u>You are responsible of what you send.</u></p>
@@ -75,7 +79,55 @@
   </q-page>
 </template>
 
-<style></style>
+<style lang="scss">
+
+  @mixin breakpoint($class) {
+    @if $class == xs {
+      @media (max-width: 767px) { @content; }
+    }
+
+    @else if $class == sm {
+      @media (min-width: 768px) { @content; }
+    }
+
+    @else if $class == md {
+      @media (min-width: 992px) { @content; }
+    }
+
+    @else if $class == lg {
+      @media (min-width: 1200px) { @content; }
+    }
+
+    @else {
+      @warn "Breakpoint mixin supports: xs, sm, md, lg";
+    }
+  }
+
+  .form-padding {
+
+    padding-bottom: 20px;
+
+    @include breakpoint(md) {
+      padding: 10px;
+    }
+
+    @include breakpoint(lg) {
+      padding: 20px;
+    }
+
+  }
+  .ql-container {
+    height: auto !important;
+
+    @include breakpoint(md) {
+      min-height: 50vh !important;
+    }
+
+    @include breakpoint(lg) {
+      min-height: 40vh !important;
+    }
+  }
+</style>
 
 <script>
   import { VueEditor, Quill } from 'vue2-editor'

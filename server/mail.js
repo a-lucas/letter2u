@@ -1,18 +1,30 @@
+console.log ('Process Env', process.env.MG_KEY);
+
 const mailgun = require('mailgun-js')({apiKey: process.env.MG_KEY, domain: process.env.MG_DOMAIN});
 
 const {format} = require('date-fns');
+const PROD = process.env.NODE_ENV === 'production';
 
 exports.sendLetter = (letter) => {
 
   console.log('Sending letter', letter);
 
   return new Promise((resolve, reject) => {
-    const link = `${process.env.DOMAIN}:${process.env.PORT}/letter/${letter._id}`;
-    const deleteLink = `${process.env.DOMAIN}:${process.env.PORT}/delete/${letter._id}`;
+    let link;
+    let deleteLink;
+    if (process.env.PORT == 443 || process.env.PORT == 80) {
+      link = `${process.env.DOMAIN}/letter/${letter._id}`;
+      deleteLink = `${process.env.DOMAIN}/delete/${letter._id}`;
+    } else {
+      link = `${process.env.DOMAIN}:${process.env.PORT}/letter/${letter._id}`;
+      deleteLink = `${process.env.DOMAIN}:${process.env.PORT}/delete/${letter._id}`;
+    }
+
+    const destinationEmail = PROD ? letter.remail : 'cooluhuru@gmail.com';
 
     const data = {
       from: `Letter2U <no-reply@mg.letter2u.club>`,
-      to: `${letter.rname} <cooluhuru@gmail.com>`,//letter.remail,
+      to: `${letter.rname} <${destinationEmail}>`,
       subject: `Hi ${letter.rname}, ${letter.name} wrote you a letter`,
       text: `Good day ${letter.rname},
       

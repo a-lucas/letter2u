@@ -3,14 +3,13 @@ const bodyParser = require("body-parser");
 const ctrl = require('./models/ctrl');
 const history = require('connect-history-api-fallback');
 const https = require('https');
-const path = require('path');
-
-const key = require('./ssl/private.pem');
-const cert = require('./ssl/certificate.pem');
+const helmet = require('helmet');
 const compression = require('compression');
 
 const app = express();
 
+
+app.use(helmet());
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({limit: '150mb'}));
@@ -25,6 +24,7 @@ app.use((req, res, next) => {
     console.log('OPTIONS');
     res.sendStatus(200);
   } else {
+
     console.log('URL', req.url);
     next();
   }
@@ -40,6 +40,7 @@ app
   .get(ctrl.readLetter)
   .put(ctrl.updateLetter)
   .delete(ctrl.deleteLetter);
+
 
 const PROD = process.env.NODE_ENV==='production';
 const port = process.env.PORT || 3301;
@@ -58,6 +59,9 @@ app.use(history({
 app.use('/', express.static(staticPath));
 
 if (PROD) {
+
+  const key = require('./ssl/private.pem');
+  const cert = require('./ssl/certificate.pem');
 
   const options = {
     key,

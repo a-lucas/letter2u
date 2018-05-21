@@ -2,6 +2,7 @@
   <q-layout view="lHh Lpr lFf">
     <q-page-container>
       <h3 style="font-weight: 200" class="flex flex-center">
+        <img src="~assets/letter2u.svg" style="width: 70px;height: 70px" class="q-pa-md"/>
         Letter 2 U
       </h3>
       <div class="flex flex-center q-mb-lg">

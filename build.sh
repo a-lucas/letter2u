@@ -1,5 +1,6 @@
 #!/bin/sh
-export NODE_ENV=production
+rm -Rf dist
+mkdir dist
 cd server
 webpack
 cd ..

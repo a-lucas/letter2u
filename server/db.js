@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const PROD = process.env.NODE_ENV === 'production';
 
 const dbURI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_URL}/${process.env.MONGODB_DB}`;
 const {sendLetter} = require('./mail');
@@ -12,11 +13,19 @@ const Letters = require('./models/letters');
 
 
 const checkUnsentLetters = () => {
-  Letters.find({
+  const searchParams = {
     deleted: false,
     sent: false,
     expirationDate: {$lt: new Date()}
-  })
+  };
+
+  if (!PROD) {
+    searchParams.email = 'cooluhuru@gmail.com';
+  }
+
+  console.log(searchParams);
+
+  Letters.find(searchParams)
     .select('_id name createdOn rname remail email')
     .exec( (err, letters) => {
       if (err) {

@@ -20,17 +20,17 @@ fs.readdirSync('./../node_modules')
 module.exports = {
   entry: './app.js',
   target: 'node',
-  //externals: nodeModules,
+  // externals: nodeModules,
   output: {
     path: path.resolve(__dirname, './../dist'),
     filename: 'server.js'
   },
-  //watch: true,
+  // watch: true,
   plugins: [
       new Dotenv({
         path: envPath,
         silent: false,
-        systemvars: false,
+        systemvars: true,
       })
   ],
   module: {

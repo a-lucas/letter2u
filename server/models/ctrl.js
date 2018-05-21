@@ -31,7 +31,9 @@ exports.readLetter = (req, res) => {
     if (err) {
       return res.status(500).send(err);
     }
+    console.log('isFuture', isFuture(new Date(letter.expirationDate)));
     if (isFuture(new Date(letter.expirationDate))) {
+
       letter.content = null;
       res.status(200).json(letter);
     } else {
