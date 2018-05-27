@@ -14,7 +14,6 @@ exports.listAllLetters = (req, res) => {
 };
 
 exports.createNewLetter = (req, res) => {
-  console.log('creating new Letter');
   req.body.content = encrypt(req.body.content, req.body.email);
   const letter = new Letters(req.body);
   letter.save((err, task) => {
@@ -26,22 +25,16 @@ exports.createNewLetter = (req, res) => {
 };
 
 exports.readLetter = (req, res) => {
-  console.log('reading Letter');
   Letters.findById(req.params.letterid, (err, letter) => {
     if (err) {
       return res.status(500).send(err);
     }
-    console.log('isFuture', isFuture(new Date(letter.expirationDate)));
     if (isFuture(new Date(letter.expirationDate))) {
-
       letter.content = null;
       res.status(200).json(letter);
     } else {
       letter.content = decrypt(letter.content, letter.email);
-
-      console.log('content OK');
-
-      Letters.findOneAndUpdate({ _id: req.params.letterid }, {sent: true}, (err) => {
+      Letters.findOneAndUpdate({ _id: req.params.letterid }, {read: letter.read + 1}, (err) => {
         if (err) {
           return res.status(404).send(err);
         }
@@ -70,6 +63,6 @@ exports.deleteLetter = (req, res) => {
     if (err) {
       res.status(404).send(err);
     }
-    res.status(200).json({ message: "Task successfully deleted" });
+    res.status(200).json({ message: "Letter successfully deleted" });
   });
 };

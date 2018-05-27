@@ -3,11 +3,11 @@ const bodyParser = require("body-parser");
 const ctrl = require('./models/ctrl');
 const history = require('connect-history-api-fallback');
 const https = require('https');
+const  http = require('http');
 const helmet = require('helmet');
 const compression = require('compression');
 
 const app = express();
-
 
 app.use(helmet());
 app.use(compression());
@@ -41,13 +41,10 @@ app
   .put(ctrl.updateLetter)
   .delete(ctrl.deleteLetter);
 
-
 const PROD = process.env.NODE_ENV==='production';
-const port = process.env.PORT || 3301;
+const port = process.env.PORT || 3302;
 
 const staticPath = './spa-mat';
-
-console.log(staticPath);
 
 app.use('/', express.static(staticPath));
 
@@ -63,26 +60,31 @@ if (PROD) {
   const key = require('./ssl/private.pem');
   const cert = require('./ssl/certificate.pem');
 
-  const options = {
-    key,
-    cert,
-  };
-
-  https.createServer(options, app).listen(port, (err) => {
+  https.createServer({key, cert,}, app).listen(port, (err) => {
     if (err) {
       throw err;
     }
     console.log(`HTTPS Express server listening on port ${port}`);
   });
 
-} else {
-  const port = process.env.PORT || 3302;
+  // Redirect from http port 80 to https
 
+  http.createServer( (req, res) => {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+  }).listen(80, (err) => {
+    if (err) {
+      throw err;
+    }
+    console.log(`HTTP redirecting to HTTPS`);
+  });
+
+} else {
   app.listen(port, (err) => {
     if (err) {
       throw err;
     }
-    console.log(`Server running on port ${port}`);
+    console.log(`Dev server running on port ${port}`);
   });
 }
 

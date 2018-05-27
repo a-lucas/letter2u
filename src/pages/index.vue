@@ -104,10 +104,13 @@
   }
 
   .form-padding {
-
-    padding-bottom: 20px;
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #ececec;
 
     @include breakpoint(md) {
+      margin: 0;
+      border: 0;
       padding: 10px;
     }
 

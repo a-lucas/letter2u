@@ -38,10 +38,10 @@ This letter has now been activated, and its content has been decrypted.
 
 You can read it by clicking on this link ${link}.
 
-You can also ignore to read this letter and delete it forever by clicking on this link ${deleteLink}.
-
 The Letter2U team.
       `
+      //You can also ignore to read this letter and delete it forever by clicking on this link ${deleteLink}.
+
     };
 
     mailgun.messages().send(data, (err) => {

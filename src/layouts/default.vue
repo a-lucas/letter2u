@@ -23,7 +23,7 @@
 
           <q-timeline-entry
             title="An authentic letter"
-            subtitle="No registration, You can write a letter, and it will be delivered at a date of your choice.."
+            subtitle="No registration, You can write a letter, and it will be delivered at a date of your choice."
             side="left"
           >
             <div>
@@ -33,12 +33,12 @@
 
 
           <q-timeline-entry
-            title="No way to get back in time"
-            subtitle="The letter is stored encrypted, and you won't be able to edit or cancel this action."
+            title="No way to go back in time"
+            subtitle="The letter is encrypted, and you won't be able to edit or cancel this."
             side="left"
           >
             <div>
-              <span style="font-size: 12px">And no way to guess what tomorrow will be made of</span>
+              <span style="font-size: 12px">All sent letters are final</span>
             </div>
           </q-timeline-entry>
 

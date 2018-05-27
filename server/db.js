@@ -11,7 +11,6 @@ const options = {
 
 const Letters = require('./models/letters');
 
-
 const checkUnsentLetters = () => {
   const searchParams = {
     deleted: false,
@@ -22,8 +21,7 @@ const checkUnsentLetters = () => {
   if (!PROD) {
     searchParams.email = 'cooluhuru@gmail.com';
   }
-
-  console.log(searchParams);
+  console.log('Checking unsent Letters...');
 
   Letters.find(searchParams)
     .select('_id name createdOn rname remail email')
@@ -53,11 +51,9 @@ mongoose.connect(dbURI, options).then(
   () => {
     console.log('Database connection established!');
 
-    console.log('Checking unsent Letters...');
     checkUnsentLetters();
 
     setInterval(() => {
-      console.log('Checking unsent Letters...');
       checkUnsentLetters();
     }, 5 * 3600 * 1000); // Check Every 5 hour
   },
