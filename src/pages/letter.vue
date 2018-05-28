@@ -22,7 +22,7 @@
               Hi {{data.rname}},
             </h4>
 
-            <p class="col-12 nice q-mb-lg" >
+            <p class="col-12  q-mb-lg" >
               <b>{{data.name}}</b> wrote you a letter on the <strong>{{format(data.createdOn, 'Do of MMMM YYYY')}}</strong>. It will be opened for you in...
             </p>
 
@@ -103,7 +103,7 @@
               <strong>{{data.name}}</strong> wrote you a letter on the <strong>{{format(data.expirationDate, 'Do of MMMM YYYY')}}</strong>
             </p>
           </div>
-          <div v-html="data.content" class="nice"></div>
+          <div v-html="data.content" class="letter-content"></div>
         </div>
       </q-page>
     </q-page-container>
@@ -120,7 +120,12 @@
     font-size: inherit;
   }
   .nice {
-    font-size: 20rem; line-height: 30rem
+    font-size: 20rem;
+    line-height: 30rem
+  }
+  .letter-content {
+    font-size: 15rem;
+    line-height: 20rem
   }
 
   body, html {
